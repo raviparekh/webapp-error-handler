@@ -22,7 +22,7 @@ The second category being fatal scenario, e.g. connection to database not being 
 
 1) Therefore each component which requires error handling should create two sets of mapping, e.g.:
 
-    ```python
+
     ERROR_MESSSAGES = {
         'TEST_APP_ERR_001': 'Invalid user: request_data: $request_sent',
         'TEST_APP_ERR_002': 'some error calling system 1, URL called: $href and error message: $error_info'
@@ -32,42 +32,42 @@ The second category being fatal scenario, e.g. connection to database not being 
         'TEST_APP_FATAL_000': 'Unknown system error has occurred',
         'TEST_APP_FATAL_002': 'Unable to connect to $href'
     }
-    ```
+
 
 2) From there continue to register the flask app to the error handler:
 
-    ```python
+
     app = Flask(__name__)
     app.run()
     register_app_for_error_handling(app.wsgi_app, "YOUR_APP_NAME", LOG)
-    ```
+
 Now the entire flask application is wrapped by the error handler.
 
 ### Define your application exceptions
 3) First define a root exception for your application which inherits the root exception from the library.
     
-    ```python
+
     class MyAppRootError(RootException):
         def __init__(self, app_err_code, status_code=500, **kwargs):
             #Passing the error mapping we defined for our application
             super(TestAppRootError, self).__init__(app_err_code, ERROR_MESSSAGES, FATAL_MESSAGES, status_code, **kwargs)
-    ```
+
 4) From there we can add more exceptions as the application grows, and add exception messages to the mapping we defined early.
 
-    ```python
+
      class InvalidRequestException(MyAppRootError):
         def __init__(self, app_err_code, **kwargs):
             super(InvalidRequestException, self).__init__(app_err_code, 400, **kwargs)
-     ```
 
-So now in the validation layer of the component, where we maybe perform request validation we can throw this exception:
 
-    ```python
+So now in the validation layer of the component, where we may perform request validation we can throw this exception:
+
+
      def is_user_valid(request):
         if(user_not_valid(request)):
             raise InvalidRequestException('TEST_APP_ERR_001', request_sent=request.json())
          #continue_with_execution
-     ```
+
      
 And the error handler will catch this exception being thrown higher up in the call stack, logs the exception and output an structured json to the client with the application error code, e.g.:
     
