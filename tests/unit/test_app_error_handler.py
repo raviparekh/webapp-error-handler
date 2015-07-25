@@ -1,7 +1,7 @@
 import json
 from unittest import TestCase
 from mock import Mock, patch
-from flask_error_handler.app_error_handler import flask_application_error_wrapper, create_json_error_response, \
+from flask_error_handler.app_error_handler import register_app_for_error_handling, create_json_error_response, \
     log_request_data, log_error
 from flask_error_handler.root_exception import RootException
 from tests.unit.test_data import ERROR_MESSSAGES, FATAL_MESSAGES
@@ -11,7 +11,7 @@ class TestAppErrorHandler(TestCase):
     def setUp(self):
         self.app = Mock()
         self.app_logger = Mock()
-        self.wrapped_app = flask_application_error_wrapper(self.app, 'TEST_APP', self.app_logger)
+        self.wrapped_app = register_app_for_error_handling(self.app, 'TEST_APP', self.app_logger)
         self.dummy_environ = {'REQUEST_METHOD': 'GET'}
         self.dummy_start_response = Mock()
 

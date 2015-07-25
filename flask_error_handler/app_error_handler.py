@@ -5,7 +5,7 @@ from flask_error_handler.root_exception import RootException
 from flask import Response, request
 
 
-def flask_application_error_wrapper(wsgi_app, app_name, app_logger):
+def register_app_for_error_handling(wsgi_app, app_name, app_logger):
     """Wraps a WSGI app and handles uncaught exceptions and defined exception and outputs a the exception in a
     structured format.
     Parameters:
