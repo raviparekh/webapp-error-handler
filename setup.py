@@ -11,6 +11,8 @@ setup(name='flask_error_handler',
                    'Intended Audience :: Developers',
                    'Topic :: Software Development :: Utilities'],
       keywords='error-handling flask-error-handler',
+      packages=['flask_error_handler'],
+      platforms='any',
       install_requires=['flask==0.10.1'])
 
 
