@@ -19,6 +19,5 @@ class TestMessages(TestCase):
     def test_should_not_error_if_app_error_code_not_found_in_mapping(self):
         actual = RootException('Mistaken_app_error_code', ERROR_MESSSAGES, FATAL_MESSAGES, 500,
                                href='http://someUrl', error_info='some_error_info')
-        self.assertEquals("**PyErrorHandler - Unable to find error code 'Mistaken_app_error_code' "
-                          "in provided error code mapping",
-                          actual.error_message)
+
+        self.assertIn("**FlaskErrorHandler", actual.error_message)
