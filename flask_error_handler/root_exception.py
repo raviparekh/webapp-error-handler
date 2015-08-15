@@ -20,7 +20,7 @@ class RootException(Exception):
             template = string.Template(self.error_message)
             self.error_message = template.safe_substitute(**kwargs)
         else:
-            self.error_message = "**PyErrorHandler - Unable to find error code '{}' in provided " \
+            self.error_message = "**FlaskErrorHandler - Unable to find error code '{}' in provided " \
                                  "error code mapping".format(self.app_err_code)
 
     def __str__(self):
