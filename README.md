@@ -38,8 +38,9 @@ The second category being fatal scenario, e.g. connection to database not being 
 
 
     app = Flask(__name__)
-    app.run()
     register_app_for_error_handling(app.wsgi_app, "YOUR_APP_NAME", LOG)
+    app.config['PROPAGATE_EXCEPTIONS'] = True
+    app.run()
 
 Now the entire flask application is wrapped by the error handler.
 
