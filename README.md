@@ -2,7 +2,7 @@
 
 ## Flask Error Handler
 
-An alternative flask application error handler which attempts to provide an extensible and structured approach to handling 
+An alternative flask application error handler which attempts to provide an extensible and structured approach to exception handling 
 for expected possible error scenario as well as the unexpected ones. 
 
 As microservice architecture continues to being a popular choice for building systems, handling error among various interacting components in a concise way is important 
@@ -10,6 +10,12 @@ for support and debugging purposes.
 
 ### How to use:
 
+View "demo" branch for example
+
+Installing flask error handler:
+
+    pip install flask_error_handler
+    
 Most components will have two categories of errors, this library categorises them into:
 
   1) Error category 
