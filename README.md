@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/raviparekh/flask-error-handler.svg?branch=master)](https://travis-ci.org/raviparekh/flask-error-handler)
+[![Coverage Status](https://coveralls.io/repos/raviparekh/flask-error-handler/badge.svg?branch=master&service=github)](https://coveralls.io/github/raviparekh/flask-error-handler?branch=master)
 
 ## Flask Error Handler
 
