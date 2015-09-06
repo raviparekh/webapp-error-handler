@@ -24,5 +24,5 @@ class RootException(Exception):
                                  "error code mapping".format(self.app_err_code)
 
     def __str__(self):
-        return repr(u"%s: %s, status code: %s" % (self.app_err_code, self.error_message, self.status_code))
+        return u"%s: %s, status code: %s" % (self.app_err_code, self.error_message, self.status_code)
 
