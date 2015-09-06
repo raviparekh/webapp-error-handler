@@ -20,6 +20,7 @@ def register_app_for_error_handling(wsgi_app, app_name, app_logger):
             status = e.status_code
             code = e.app_err_code.upper()
             error_message = e.error_message
+            stack_trace = traceback.format_exc().splitlines()[-1]
             additional_info = e.additional_info
             log_request_data(app_logger)
         except Exception:
@@ -27,20 +28,20 @@ def register_app_for_error_handling(wsgi_app, app_name, app_logger):
             code = '{}_FATAL_000'.format(app_name.upper())
             error_message = 'Unknown System Error'
             stack_trace = traceback.format_exc()
-            additional_info = stack_trace.splitlines()[-1]
+            additional_info = None
             log_request_data(app_logger)
 
-        response = create_json_error_response(status, code, error_message, additional_info, app_logger)
+        response = create_json_error_response(status, code, error_message, additional_info, stack_trace, app_logger)
+
         return response(environ, start_response)
     return wrapper
 
 
 def create_identifier():
-    return uuid.uuid1().get_hex()
+    return uuid.uuid1().hex
 
 
-def log_error(error_details, app_logger):
-    trace = traceback.format_exc()
+def log_error(error_details, trace, app_logger):
     error_details['trace_stack'] = trace
     app_logger.error(error_details)
 
@@ -50,19 +51,15 @@ def construct_error_info(code, error_message, additional_info):
     return {"app_err_code": code, 'logref': logref, "error_message": error_message, "additional_info": additional_info}
 
 
-def create_json_error_response(status, code, error_message, additional_info, app_logger):
+def create_json_error_response(status, code, error_message, additional_info, trace, app_logger):
     error_details = construct_error_info(code, error_message, additional_info)
     _response = Response(json.dumps(error_details), status=status, content_type='application/json')
-    log_error(error_details, app_logger)
+    log_error(error_details, trace, app_logger)
     return _response
 
 
 def log_request_data(app_logger):
     try:
         app_logger.info(u"Request data given to application:\n {}".format(request.data))
-    except StandardError:
-        app_logger.debug(u"Could not log request data")
-
-
-
-
+    except (AttributeError, RuntimeError) as e:
+        app_logger.debug(u"Could not log request data. Error info: {}".format(e))

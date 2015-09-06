@@ -2,9 +2,10 @@ import json
 from unittest import TestCase
 from mock import Mock, patch
 from flask_error_handler.app_error_handler import register_app_for_error_handling, create_json_error_response, \
-    log_request_data, log_error
+    log_request_data, log_error, create_identifier
 from flask_error_handler.root_exception import RootException
 from tests.unit.test_data import ERROR_MESSSAGES, FATAL_MESSAGES
+
 
 class TestAppErrorHandler(TestCase):
 
@@ -42,10 +43,12 @@ class TestAppErrorHandler(TestCase):
 
     def test_log_error(self):
         mock_logger = Mock()
+
         error_details_dict = {u'trace_stack': u'None', u'error_message': u'some_error_details',
                               u'app_err_code': u'some_app_err_code', u'additional_info': u'some_additional_info',
                               u'logref': u'some_logref'}
-        log_error(error_details_dict, mock_logger)
+
+        log_error(error_details_dict, 'some_trace_stack', mock_logger)
         mock_logger.error.assert_called_once_with(error_details_dict)
 
     def test_log_request_data(self):
@@ -59,12 +62,15 @@ class TestAppErrorHandler(TestCase):
                     u'additional_info': u'some_additional_info', u'logref': u'some_logref'}
         app_logger = Mock()
         response = create_json_error_response(400, 'some_app_err_code', 'some_error_details', 'some_additional_info',
-                                              app_logger)
-        response_content = json.loads(response.data)
+                                              'some_tracestack', app_logger)
+        response_content = json.loads(response.data.decode("utf-8"))
         self.assertEqual(expected, response_content)
         self.assertEqual(400, response.status_code)
         app_logger.error.assert_called()
 
+    def test_create_identifier(self):
+        uuid = create_identifier()
+        self.assertTrue(isinstance(uuid, str))
 
 class TestAppRootError(RootException):
     def __init__(self, app_err_code, status_code=500, **kwargs):
