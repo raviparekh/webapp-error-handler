@@ -1,7 +1,7 @@
 from logging import WARN, CRITICAL
 import unittest
 from mock import Mock
-from flask.ext.error_handler.logging_service import LoggingService
+from flask_error_handler.logging_service import LoggingService
 
 
 class TestLoggingService(unittest.TestCase):

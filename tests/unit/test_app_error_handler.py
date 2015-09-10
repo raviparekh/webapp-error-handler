@@ -47,6 +47,7 @@ class TestAppErrorHandler(TestCase):
         self.status_code = status_code
         self.headers = headers
 
+
 class TestAppRootError(RootException):
     def __init__(self, app_err_code, status_code=500, **kwargs):
         super(TestAppRootError, self).__init__(app_err_code, WARNING_MESSSAGES, ERROR_MESSSAGES, FATAL_MESSAGES,

@@ -1,5 +1,5 @@
 import traceback
-from flask.ext.error_handler.logging_service import LoggingService
+from flask_error_handler.logging_service import LoggingService
 from flask_error_handler.root_exception import RootException
 from werkzeug.wrappers import Request
 
