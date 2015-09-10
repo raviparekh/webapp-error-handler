@@ -4,6 +4,8 @@
 
 ## Flask Error Handler
 
+### Docs for v1.0.0 and v1.1.0
+
 An alternative flask application error handler which attempts to provide an extensible and structured approach to exception handling 
 for expected possible error scenario as well as the unexpected ones. 
 

@@ -1,9 +1,14 @@
+WARNING_MESSSAGES = {
+    'WARN_001': 'Some warning: $error_info',
+    'WARN_002': 'External service took longer than usual to respond'
+}
+
 ERROR_MESSSAGES = {
-    'TEST_APP_ERR_001': 'Some error: $error_info',
-    'TEST_APP_ERR_002': 'some error calling system 1, URL called: $href and error message: $error_info'
+    'ERR_001': 'Some error: $error_info',
+    'ERR_002': 'some error calling system 1, URL called: $href and error message: $error_info'
 }
 
 FATAL_MESSAGES = {
-    'TEST_APP_FATAL_000': 'Unknown system error has occurred',
-    'TEST_APP_FATAL_002': 'Unable to connect to $href'
+    'FATAL_001': 'Unknown system error has occurred',
+    'FATAL_002': 'Unable to connect to $href'
 }

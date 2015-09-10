@@ -1,8 +1,7 @@
-import json
 import traceback
-import uuid
+from flask.ext.error_handler.logging_service import LoggingService
 from flask_error_handler.root_exception import RootException
-from flask import Response, request
+from werkzeug.wrappers import Request
 
 
 def register_app_for_error_handling(wsgi_app, app_name, app_logger):
@@ -13,53 +12,24 @@ def register_app_for_error_handling(wsgi_app, app_name, app_logger):
     - app_name should in correct format e.g. APP_NAME_1,
     - app_logger is the logger object"""
 
+    logging_service = LoggingService(app_name, app_logger)
+
     def wrapper(environ, start_response):
         try:
             return wsgi_app(environ, start_response)
         except RootException as e:
-            status = e.status_code
-            code = e.app_err_code.upper()
-            error_message = e.error_message
+            app_request = Request(environ)
             stack_trace = traceback.format_exc().splitlines()[-1]
-            additional_info = e.additional_info
-            log_request_data(app_logger)
+            logging_service.update_with_exception_data(e, app_request, stack_trace)
         except Exception:
-            status = 500
-            code = '{}_FATAL_000'.format(app_name.upper())
-            error_message = 'Unknown System Error'
+            app_request = Request(environ)
             stack_trace = traceback.format_exc()
-            additional_info = None
-            log_request_data(app_logger)
+            e = RootException("FATAL_000", {}, {}, {}, status_code=500)
+            e.error_message = "Unknown System Error"
+            logging_service.update_with_exception_data(e, app_request, stack_trace)
 
-        response = create_json_error_response(status, code, error_message, additional_info, stack_trace, app_logger)
+        response = logging_service.create_json_error_response()
 
         return response(environ, start_response)
     return wrapper
 
-
-def create_identifier():
-    return uuid.uuid1().hex
-
-
-def log_error(error_details, trace, app_logger):
-    error_details['trace_stack'] = trace
-    app_logger.error(error_details)
-
-
-def construct_error_info(code, error_message, additional_info):
-    logref = create_identifier()
-    return {"app_err_code": code, 'logref': logref, "error_message": error_message, "additional_info": additional_info}
-
-
-def create_json_error_response(status, code, error_message, additional_info, trace, app_logger):
-    error_details = construct_error_info(code, error_message, additional_info)
-    _response = Response(json.dumps(error_details), status=status, content_type='application/json')
-    log_error(error_details, trace, app_logger)
-    return _response
-
-
-def log_request_data(app_logger):
-    try:
-        app_logger.info(u"Request data given to application:\n {}".format(request.data))
-    except (AttributeError, RuntimeError) as e:
-        app_logger.debug(u"Could not log request data. Error info: {}".format(e))

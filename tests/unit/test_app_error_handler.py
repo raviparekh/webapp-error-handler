@@ -1,82 +1,59 @@
 import json
 from unittest import TestCase
 from mock import Mock, patch
-from flask_error_handler.app_error_handler import register_app_for_error_handling, create_json_error_response, \
-    log_request_data, log_error, create_identifier
+from werkzeug.wrappers import Response
+from flask_error_handler.app_error_handler import register_app_for_error_handling
 from flask_error_handler.root_exception import RootException
-from tests.unit.test_data import ERROR_MESSSAGES, FATAL_MESSAGES
+from tests.unit.test_data import ERROR_MESSSAGES, FATAL_MESSAGES, WARNING_MESSSAGES
 
 
 class TestAppErrorHandler(TestCase):
 
     def setUp(self):
+        self.request_patch = patch("flask_error_handler.app_error_handler.Request")
+        self.request_patch.start()
         self.app = Mock()
         self.app_logger = Mock()
         self.wrapped_app = register_app_for_error_handling(self.app, 'TEST_APP', self.app_logger)
         self.dummy_environ = {'REQUEST_METHOD': 'GET'}
-        self.dummy_start_response = Mock()
+        self.dummy_start_response = self.record_status_code
 
-    @patch('flask_error_handler.app_error_handler.create_json_error_response')
-    @patch('flask_error_handler.app_error_handler.log_error')
-    def test_handle_errors_for_unexpected_errors(self, mock_log_error, mock_create_json_error_response):
+    def tearDown(self):
+        self.request_patch.stop()
+
+    def test_handle_errors_for_unexpected_errors(self):
         self.app.side_effect = Exception
-        mock_create_json_error_response.return_value = Mock()
-        self.wrapped_app(self.dummy_environ, self.dummy_start_response)
-        mock_log_error.assert_called()
-        mock_create_json_error_response.assert_called()
+        actual_response = Response(self.wrapped_app(self.dummy_environ, self.dummy_start_response))
+        self.app_logger.critical.assert_called()
+        self.assertEqual(self.status_code, "500 INTERNAL SERVER ERROR")
+        self.assert_response_with_expectation(u"TEST_APP_FATAL_000", u"Unknown System Error",  None, actual_response)
 
-    @patch('flask_error_handler.app_error_handler.create_json_error_response')
-    @patch('flask_error_handler.app_error_handler.log_error')
-    def test_handle_errors_for_known_errors(self, mock_log_error, mock_create_json_error_response):
-        self.app.side_effect = TestSomeError('TEST_APP_FATAL_000')
-        self.wrapped_app(self.dummy_environ, self.dummy_start_response)
-        mock_log_error.assert_called()
-        mock_create_json_error_response.assert_called()
+    def test_handle_errors_for_known_errors(self):
+        self.app.side_effect = TestSomeError(u"FATAL_002", status_code=500, href=u"http://somehref")
+        actual_response = Response(self.wrapped_app(self.dummy_environ, self.dummy_start_response))
+        self.app_logger.critical.assert_called()
+        self.assertEqual(self.status_code, "500 INTERNAL SERVER ERROR")
+        self.assert_response_with_expectation(u"TEST_APP_FATAL_002", u"Unable to connect to http://somehref", None,
+                                              actual_response)
 
-    @patch('flask_error_handler.app_error_handler.create_json_error_response')
-    @patch('flask_error_handler.app_error_handler.log_error')
-    def test_handle_errors_for_unknown_errors(self, mock_log_error, mock_create_json_error_response):
-        self.app.side_effect = Exception
-        self.wrapped_app(self.dummy_environ, self.dummy_start_response)
-        mock_log_error.assert_called()
-        mock_create_json_error_response.assert_called()
+    def assert_response_with_expectation(self, app_err_code, expected_error_message, additional_info, actual_response):
+        actual_json = json.loads(actual_response.data.decode("utf-8"))
+        expected_response = {u'error_message': expected_error_message, u'app_err_code': app_err_code,
+                             u'additional_info': additional_info}
+        self.assertIsNotNone(actual_json.pop("logref"))
+        self.assertDictEqual(expected_response, actual_json)
 
-    def test_log_error(self):
-        mock_logger = Mock()
-
-        error_details_dict = {u'trace_stack': u'None', u'error_message': u'some_error_details',
-                              u'app_err_code': u'some_app_err_code', u'additional_info': u'some_additional_info',
-                              u'logref': u'some_logref'}
-
-        log_error(error_details_dict, 'some_trace_stack', mock_logger)
-        mock_logger.error.assert_called_once_with(error_details_dict)
-
-    def test_log_request_data(self):
-        log_request_data(self.app_logger)
-        self.app_logger.info.assert_called()
-
-    @patch('flask_error_handler.app_error_handler.create_identifier')
-    def test_create_json_error_response(self, mock_create_identifier):
-        mock_create_identifier.return_value = u'some_logref'
-        expected = {u'error_message': u'some_error_details', u'app_err_code': u'some_app_err_code',
-                    u'additional_info': u'some_additional_info', u'logref': u'some_logref'}
-        app_logger = Mock()
-        response = create_json_error_response(400, 'some_app_err_code', 'some_error_details', 'some_additional_info',
-                                              'some_tracestack', app_logger)
-        response_content = json.loads(response.data.decode("utf-8"))
-        self.assertEqual(expected, response_content)
-        self.assertEqual(400, response.status_code)
-        app_logger.error.assert_called()
-
-    def test_create_identifier(self):
-        uuid = create_identifier()
-        self.assertTrue(isinstance(uuid, str))
+    def record_status_code(self, status_code, headers):
+        self.status_code = status_code
+        self.headers = headers
 
 class TestAppRootError(RootException):
     def __init__(self, app_err_code, status_code=500, **kwargs):
-        super(TestAppRootError, self).__init__(app_err_code, ERROR_MESSSAGES, FATAL_MESSAGES, status_code, **kwargs)
+        super(TestAppRootError, self).__init__(app_err_code, WARNING_MESSSAGES, ERROR_MESSSAGES, FATAL_MESSAGES,
+                                               status_code, **kwargs)
+
 
 class TestSomeError(TestAppRootError):
-    def __init__(self, app_err_code, **kwargs):
-        super(TestSomeError, self).__init__(app_err_code, 400, **kwargs)
+    def __init__(self, app_err_code, status_code=500, **kwargs):
+        super(TestSomeError, self).__init__(app_err_code, status_code, **kwargs)
 
