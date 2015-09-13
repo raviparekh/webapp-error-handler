@@ -1,9 +1,11 @@
-from abc import ABCMeta, abstractclassmethod
+from abc import ABCMeta, abstractmethod
 
 
-class LoggingServiceInterface(metaclass=ABCMeta):
+class LoggingServiceInterface():
 
-    @abstractclassmethod
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
     def log_error(self, log_level_fn, error_details, request, stack_trace):
         '''
         log_level_fn - is the logging function from Logger, can be one of warning, error or critical
