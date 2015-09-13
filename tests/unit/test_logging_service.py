@@ -1,6 +1,6 @@
 from logging import WARN, CRITICAL
 import unittest
-from mock import Mock
+from mock import Mock, MagicMock, PropertyMock
 from flask_error_handler.logging_service import LoggingService
 
 
@@ -37,13 +37,26 @@ class TestLoggingService(unittest.TestCase):
         self.logging_service.log_error(self.error_details_dict)
         self.mock_logger.critical.assert_called()
 
-    def test_log_request_data_handles_exception_when_request_data_not_available(self):
-        mock_request = Mock()
-        mock_request.mock_request.return_value = AttributeError
-        self.logging_service.update_with_exception_data(Mock(), mock_request, "some stack trace")
+    def test_log_request_data_handles_attribute_error_when_request_data_not_available(self):
+        self.logging_service.update_with_exception_data(Mock(), CustomRequestMock(AttributeError), "some stack trace")
+        self.logging_service.log_request_data()
+        self.mock_logger.debug.assert_called()
+
+    def test_log_request_data_handles_runtime_error_when_request_data_not_available(self):
+        self.logging_service.update_with_exception_data(Mock(), CustomRequestMock(RuntimeError), "some stack trace")
         self.logging_service.log_request_data()
         self.mock_logger.debug.assert_called()
 
     def test_create_identifier(self):
         uuid = self.logging_service.create_identifier()
         self.assertTrue(isinstance(uuid, str))
+
+
+class CustomRequestMock(object):
+
+    def __init__(self, ex):
+        self.ex = ex
+
+    @property
+    def data(self):
+        raise self.ex

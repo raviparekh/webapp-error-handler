@@ -4,8 +4,6 @@
 
 ## Flask Error Handler
 
-### Docs for v1.0.0 and v1.1.0
-
 An alternative flask application error handler which attempts to provide an extensible and structured approach to exception handling 
 for expected possible error scenario as well as the unexpected ones. 
 
@@ -32,15 +30,18 @@ The second category being fatal scenario, e.g. connection to database not being 
 
 1) Therefore each component which requires error handling should create two sets of mapping, e.g.:
 
-
+    WARNING_MESSAGES = {
+        'WARN_001': 'Some warning'
+    }
+    
     ERROR_MESSSAGES = {
-        'TEST_APP_ERR_001': 'Invalid user: request_data: $request_sent',
-        'TEST_APP_ERR_002': 'some error calling system 1, URL called: $href and error message: $error_info'
+        'ERR_001': 'Invalid user: request_data: $request_sent',
+        'ERR_002': 'some error calling system 1, URL called: $href and error message: $error_info'
     }
     
     FATAL_MESSAGES = {
-        'TEST_APP_FATAL_000': 'Unknown system error has occurred',
-        'TEST_APP_FATAL_002': 'Unable to connect to $href'
+        'FATAL_000': 'Unknown system error has occurred',
+        'FATAL_002': 'Unable to connect to $href'
     }
 
 
@@ -48,7 +49,7 @@ The second category being fatal scenario, e.g. connection to database not being 
 
 
     app = Flask(__name__)
-    register_app_for_error_handling(app.wsgi_app, "YOUR_APP_NAME", LOG)
+    register_app_for_error_handling(app.wsgi_app, "TEST_APP", LOG)
     app.config['PROPAGATE_EXCEPTIONS'] = True
     app.run()
 
@@ -61,7 +62,7 @@ Now the entire flask application is wrapped by the error handler.
     class MyAppRootError(RootException):
         def __init__(self, app_err_code, status_code=500, **kwargs):
             #Passing the error mapping we defined for our application
-            super(TestAppRootError, self).__init__(app_err_code, ERROR_MESSSAGES, FATAL_MESSAGES, status_code, **kwargs)
+            super(TestAppRootError, self).__init__(app_err_code, WARNING_MESSAGES, ERROR_MESSSAGES, FATAL_MESSAGES, status_code, **kwargs)
 
 4) From there we can add more exceptions as the application grows, and add exception messages to the mapping we defined early.
 
@@ -76,7 +77,7 @@ So now in the validation layer of the component, where we may perform request va
 
      def is_user_valid(request):
         if(user_not_valid(request)):
-            raise InvalidRequestException('TEST_APP_ERR_001', request_sent=request.json())
+            raise InvalidRequestException('ERR_001', request_sent=request.json())
          #continue_with_execution
 
      

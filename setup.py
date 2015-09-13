@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='flask_error_handler',
-      version='1.1.0',
+      version='2.0.0',
       description='An Alternative flask error handling',
       url='https://github.com/raviparekh/flask-error-handler',
       author='Ravi Parekh',
@@ -14,7 +14,7 @@ setup(name='flask_error_handler',
       keywords='error-handling flask-error-handler',
       packages=['flask_error_handler'],
       platforms='any',
-      install_requires=['flask==0.10.1'])
+      install_requires=['Werkzeug==0.10.4'])
 
 
 
