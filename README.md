@@ -54,7 +54,7 @@ The second category being fatal scenario, e.g. connection to database not being 
 
 
     app = Flask(__name__)
-    register_app_for_error_handling(app.wsgi_app, "TEST_APP", LOG)
+    app.wsgi_app = register_app_for_error_handling(app.wsgi_app, "TEST_APP", LOG)
     app.config['PROPAGATE_EXCEPTIONS'] = True
     app.run()
 
