@@ -1,6 +1,6 @@
 from logging import Logger, ERROR, CRITICAL, WARN
 from unittest import TestCase
-from flask_error_handler.root_exception import RootException
+from app_error_handler.root_exception import RootException
 from tests.unit.test_data import ERROR_MESSSAGES, FATAL_MESSAGES, WARNING_MESSSAGES
 
 

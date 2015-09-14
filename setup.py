@@ -1,9 +1,11 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
-setup(name='flask_error_handler',
-      version='2.0.0',
-      description='An Alternative flask error handling',
-      url='https://github.com/raviparekh/flask-error-handler',
+packages = find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"])
+
+setup(name='app_error_handler',
+      version='1.0.0',
+      description='An Alternative to web application error handling',
+      url='https://github.com/raviparekh/webapp-error-handler',
       author='Ravi Parekh',
       license='MIT',
       classifiers=['License :: OSI Approved :: MIT License',
@@ -11,8 +13,8 @@ setup(name='flask_error_handler',
                    'Programming Language :: Python :: 3.4',
                    'Intended Audience :: Developers',
                    'Topic :: Software Development :: Libraries'],
-      keywords='error-handling flask-error-handler',
-      packages=['flask_error_handler'],
+      keywords='error-handling flask-error-handler flask django error handler',
+      packages=packages,
       platforms='any',
       install_requires=['Werkzeug==0.10.4'])
 

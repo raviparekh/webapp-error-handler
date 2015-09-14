@@ -1,6 +1,6 @@
 import json
 from logging import WARN, ERROR, CRITICAL
-from flask_error_handler.interfaces.logging_service_interface import LoggingServiceInterface
+from app_error_handler.interfaces.logging_service_interface import LoggingServiceInterface
 
 
 class LoggingService(LoggingServiceInterface):

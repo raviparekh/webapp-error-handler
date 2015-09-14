@@ -9,7 +9,7 @@ install:
  - pip install -r requirements_test.txt
  - pip install python-coveralls==2.5.0
 
-script: nosetests --with-coverage --cover-erase --cover-package=flask_error_handler
+script: nosetests --with-coverage --cover-erase --cover-package=app_error_handler
 
 after_success:
   - coveralls

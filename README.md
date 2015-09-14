@@ -1,28 +1,33 @@
-[![PyPI version](https://badge.fury.io/py/flask_error_handler.svg)](http://badge.fury.io/py/flask_error_handler)
-[![Build Status](https://travis-ci.org/raviparekh/flask-error-handler.svg?branch=master)](https://travis-ci.org/raviparekh/flask-error-handler)
-[![Coverage Status](https://coveralls.io/repos/raviparekh/flask-error-handler/badge.svg?branch=master&service=github)](https://coveralls.io/github/raviparekh/flask-error-handler?branch=master)
+[![PyPI version](https://badge.fury.io/py/app_error_handler.svg)](http://badge.fury.io/py/app_error_handler)
+[![Build Status](https://travis-ci.org/raviparekh/webapp-error-handler.svg?branch=master)](https://travis-ci.org/raviparekh/webapp-error-handler)
+[![Coverage Status](https://coveralls.io/repos/raviparekh/webapp-error-handler/badge.svg?branch=master&service=github)](https://coveralls.io/github/raviparekh/webapp-error-handler?branch=master)
 
-## Flask Error Handler
+## Web Application Error Handler
 
-An alternative flask application error handler which attempts to provide an extensible and structured approach to exception handling 
+An alternative to web application error handling which attempts to provide an extensible and structured approach to exception handling 
 for expected possible error scenario as well as the unexpected ones. 
 
 As microservice architecture continues to being a popular choice for building systems, handling error among various interacting components in a concise way is important 
 for support and debugging purposes.
 
+Compatible with Flask, Django and other web frameworks
+
 ### How to use:
 
 View "demo" branch for example
 
-Installing flask error handler:
+Installing web app error handler:
 
-    pip install flask_error_handler
+    pip install webapp_error_handler
     
 Most components will have two categories of errors, this library categorises them into:
 
-  1) Error category 
+  1) Warning category
+
+  2) Error category 
   
-  2) Fatal Category 
+  3) Fatal Category 
+  
  
 The first category being error scenario, e.g. where a request was incorrect, this type of error are based on individual cases
 and considered non critical to the health of the component.
@@ -45,7 +50,7 @@ The second category being fatal scenario, e.g. connection to database not being 
     }
 
 
-2) From there continue to register the flask app to the error handler:
+2) From there continue to register the application to the error handler:
 
 
     app = Flask(__name__)

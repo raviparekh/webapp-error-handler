@@ -1,8 +1,8 @@
 import json
 import traceback
-from flask_error_handler.logging_service import LoggingService
-from flask_error_handler.exception_handling_service import ExceptionHandler
-from flask_error_handler.root_exception import RootException
+from app_error_handler.logging_service import LoggingService
+from app_error_handler.exception_handling_service import ExceptionHandler
+from app_error_handler.root_exception import RootException
 from werkzeug.wrappers import Request, Response
 
 

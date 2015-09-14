@@ -1,6 +1,6 @@
 import unittest
 from mock import Mock
-from flask_error_handler.exception_handling_service import ExceptionHandler
+from app_error_handler.exception_handling_service import ExceptionHandler
 
 
 class TestExceptionHandler(unittest.TestCase):

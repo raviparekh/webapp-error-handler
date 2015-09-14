@@ -1,2 +1,2 @@
-recursive-include flask_error_handler *.py
+recursive-include app_error_handler *.py
 recursive-exclude tests *
