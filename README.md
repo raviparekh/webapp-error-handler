@@ -18,7 +18,7 @@ View "demo" branch for example
 
 Installing web app error handler:
 
-    pip install webapp_error_handler
+    pip install app_error_handler
     
 Most components will have two categories of errors, this library categorises them into:
 

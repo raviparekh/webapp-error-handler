@@ -2,8 +2,8 @@ import json
 from unittest import TestCase
 from mock import Mock, patch
 from werkzeug.wrappers import Response
+from app_error_handler.application_error_handler import register_app_for_error_handling
 from app_error_handler.interfaces.logging_service_interface import LoggingServiceInterface
-from app_error_handler.app_error_handler import register_app_for_error_handling
 from app_error_handler.root_exception import RootException
 from tests.unit.test_data import ERROR_MESSSAGES, FATAL_MESSAGES, WARNING_MESSSAGES
 
@@ -11,7 +11,7 @@ from tests.unit.test_data import ERROR_MESSSAGES, FATAL_MESSAGES, WARNING_MESSSA
 class TestAppErrorHandler(TestCase):
 
     def setUp(self):
-        self.request_patch = patch("app_error_handler.app_error_handler.Request")
+        self.request_patch = patch("app_error_handler.application_error_handler.Request")
         self.request_patch.start()
         self.app = Mock()
         self.app_logger = Mock()

@@ -1,9 +1,9 @@
 import json
 import traceback
-from app_error_handler.logging_service import LoggingService
-from app_error_handler.exception_handling_service import ExceptionHandler
-from app_error_handler.root_exception import RootException
 from werkzeug.wrappers import Request, Response
+from app_error_handler.exception_handling_service import ExceptionHandler
+from app_error_handler.logging_service import LoggingService
+from app_error_handler.root_exception import RootException
 
 
 def register_app_for_error_handling(wsgi_app, app_name, app_logger, custom_logging_service=None):

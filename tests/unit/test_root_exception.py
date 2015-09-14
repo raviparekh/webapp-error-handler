@@ -1,4 +1,4 @@
-from logging import Logger, ERROR, CRITICAL, WARN
+from logging import ERROR, CRITICAL, WARN
 from unittest import TestCase
 from app_error_handler.root_exception import RootException
 from tests.unit.test_data import ERROR_MESSSAGES, FATAL_MESSAGES, WARNING_MESSSAGES

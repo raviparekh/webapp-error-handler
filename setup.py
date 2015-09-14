@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 packages = find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"])
 
 setup(name='app_error_handler',
-      version='1.0.0',
+      version='1.0.1',
       description='An Alternative to web application error handling',
       url='https://github.com/raviparekh/webapp-error-handler',
       author='Ravi Parekh',
