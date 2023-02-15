@@ -16,7 +16,7 @@ setup(name='app_error_handler',
       keywords='error-handling flask-error-handler flask django error handler',
       packages=packages,
       platforms='any',
-      install_requires=['Werkzeug==0.15.3'])
+      install_requires=['Werkzeug==2.2.3'])
 
 
 
